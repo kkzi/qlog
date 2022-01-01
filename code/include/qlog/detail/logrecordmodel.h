@@ -19,6 +19,13 @@ class QLOG_API LogRecordModel : public QAbstractTableModel
 {
     Q_OBJECT
 
+public:
+    enum class NewRecordPosition
+    {
+        Top,
+        Bottom,
+    };
+
 private:
     LogRecordModel() = default;
     ~LogRecordModel() = default;
@@ -34,6 +41,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
 public:
+    void setNewRecordPosition(NewRecordPosition pos);
     void setDateTimeFormat(const QString &fmt);
     void append(const LogRecord &log);
     const QList<LogRecord> &logs() const;
@@ -48,4 +56,5 @@ private:
 private:
     QString fmt_{ "MM-dd hh:mm:ss.zzz" };
     QList<LogRecord> logs_;
+    NewRecordPosition pos_{ NewRecordPosition::Bottom };
 };

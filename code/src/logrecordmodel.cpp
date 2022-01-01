@@ -56,6 +56,11 @@ QVariant LogRecordModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+void LogRecordModel::setNewRecordPosition(NewRecordPosition pos)
+{
+    pos_ = pos;
+}
+
 int LogRecordModel::columnWidth(int col)
 {
     static QVector<int> colws{ 140, 60, 200 };
@@ -70,8 +75,19 @@ void LogRecordModel::setDateTimeFormat(const QString &fmt)
 void LogRecordModel::append(const LogRecord &log)
 {
     auto rowc = logs_.size();
-    beginInsertRows(QModelIndex(), rowc, rowc);
-    logs_.append(log);
+    switch (pos_)
+    {
+    case LogRecordModel::NewRecordPosition::Top:
+        beginInsertRows(QModelIndex(), 0, 0);
+        logs_.prepend(log);
+        break;
+    case LogRecordModel::NewRecordPosition::Bottom:
+        beginInsertRows(QModelIndex(), rowc, rowc);
+        logs_.append(log);
+        break;
+    default:
+        break;
+    }
     endInsertRows();
 }
 
